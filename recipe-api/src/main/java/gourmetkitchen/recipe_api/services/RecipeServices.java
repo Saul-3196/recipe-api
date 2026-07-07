@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class RecipeService {
+public class RecipeServices {
 
     private final RecipeRepository recipeRepository;
 
     // Dependency injection through constructor
-    public RecipeService(RecipeRepository recipeRepository) {
+    public RecipeServices(RecipeRepository recipeRepository) {
         this.recipeRepository = recipeRepository;
     }
 
