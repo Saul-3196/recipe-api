@@ -2,6 +2,7 @@ package gourmetkitchen.recipe_api.controllers;
 
 import gourmetkitchen.recipe_api.entities.Recipe;
 import gourmetkitchen.recipe_api.services.RecipeServices;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class RecipeController {
 
     // POST /api/recipes - Save new recipe
     @PostMapping
-    public ResponseEntity<Recipe> createRecipe(@RequestBody Recipe recipe) {
+    public ResponseEntity<Recipe> createRecipe(@Valid @RequestBody Recipe recipe) {
         Recipe savedRecipe = recipeService.saveRecipe(recipe);
         return ResponseEntity.ok(savedRecipe);
     }
@@ -44,7 +45,7 @@ public class RecipeController {
     }
     // PUT /api/recipes/{id} - Update an existing recipe by ID
     @PutMapping("/{id}")
-    public ResponseEntity<Recipe> updateRecipe(@PathVariable Long id, @RequestBody Recipe updatedRecipe) {
+    public ResponseEntity<Recipe> updateRecipe(@Valid @PathVariable Long id, @RequestBody Recipe updatedRecipe) {
         return recipeService.updateRecipe(id, updatedRecipe)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
