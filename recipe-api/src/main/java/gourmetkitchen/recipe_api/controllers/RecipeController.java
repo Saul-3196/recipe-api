@@ -29,4 +29,25 @@ public class RecipeController {
         Recipe savedRecipe = recipeService.saveRecipe(recipe);
         return ResponseEntity.ok(savedRecipe);
     }
+    // DELETE /api/recipes/{id} - Delete by ID
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRecipe(@PathVariable Long id) {
+        recipeService.deleteRecipe(id);
+        return ResponseEntity.noContent().build(); // Returns HTTP 204 Not Found
+    }
+    // GET /api/recipes/{id} - Retrieve a specific recipe by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Recipe> getRecipeById(@PathVariable Long id) {
+        return recipeService.getRecipeById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build()); // Returns HTTP 404 if not found
+    }
+    // PUT /api/recipes/{id} - Update an existing recipe by ID
+    @PutMapping("/{id}")
+    public ResponseEntity<Recipe> updateRecipe(@PathVariable Long id, @RequestBody Recipe updatedRecipe) {
+        return recipeService.updateRecipe(id, updatedRecipe)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
 }
