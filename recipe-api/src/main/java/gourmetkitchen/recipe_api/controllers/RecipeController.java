@@ -27,7 +27,7 @@ public class RecipeController {
     // POST /api/recipes - Save new recipe
     @PostMapping
     public ResponseEntity<Recipe> createRecipe(@Valid @RequestBody Recipe recipe) {
-        Recipe savedRecipe = recipeService.saveRecipe(recipe);
+        Recipe savedRecipe = recipeService.createRecipe(recipe);
         return ResponseEntity.ok(savedRecipe);
     }
     // DELETE /api/recipes/{id} - Delete by ID

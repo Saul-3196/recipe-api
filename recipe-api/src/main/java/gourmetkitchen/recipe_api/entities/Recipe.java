@@ -9,6 +9,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "recipes")
 @Data
@@ -39,4 +42,8 @@ public class Recipe {
     private String difficulty; // Easy, medium, hard.
 
     private String imageUrl; // RecipePhoto
+
+    //One recipe can hace many ingredients
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ingredient> ingredients = new ArrayList<>();
 }
