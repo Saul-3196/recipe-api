@@ -1,5 +1,6 @@
 package gourmetkitchen.recipe_api.services;
 
+import gourmetkitchen.recipe_api.entities.Ingredient;
 import gourmetkitchen.recipe_api.entities.Recipe;
 import gourmetkitchen.recipe_api.repositories.RecipeRepository;
 import org.springframework.stereotype.Service;
@@ -35,36 +36,40 @@ public class RecipeServices {
         return recipeRepository.save(recipe);
     }
 
-    // Method to delete a recipe by its ID
-    public void deleteRecipe(Long id) {
-        recipeRepository.deleteById(id);
-    }
-
     // Method to find a single recipe by its ID
     public Recipe getRecipeById(Long id) {
         return recipeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Receta no encontrada con ID: " + id));
     }
 
-    // Method to update an existing recipe by ID
-    public Optional<Recipe> updateRecipe(Long id, Recipe updatedRecipe) {
-        return recipeRepository.findById(id).map(existingRecipe -> {
-            existingRecipe.setTitle(updatedRecipe.getTitle());
-            existingRecipe.setDescription(updatedRecipe.getDescription());
-            existingRecipe.setPreparationTime(updatedRecipe.getPreparationTime());
-            existingRecipe.setDifficulty(updatedRecipe.getDifficulty());
-            existingRecipe.setImageUrl(updatedRecipe.getImageUrl());
+    // Method to update a recipe
+    public Recipe updateRecipe(Long id, Recipe updatedRecipe) {
+        Recipe existingRecipe = recipeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Receta no encontrada con ID: " + id));
 
-            // Clear previous ingredients and add updated ones
+        existingRecipe.setTitle(updatedRecipe.getTitle());
+        existingRecipe.setDescription(updatedRecipe.getDescription());
+        existingRecipe.setPreparationTime(updatedRecipe.getPreparationTime());
+        existingRecipe.setDifficulty(updatedRecipe.getDifficulty());
+        existingRecipe.setImageUrl(updatedRecipe.getImageUrl());
+
+        // Updated list ingredients
+        if (updatedRecipe.getIngredients() != null) {
             existingRecipe.getIngredients().clear();
-            if (updatedRecipe.getIngredients() != null) {
-                updatedRecipe.getIngredients().forEach(ingredient -> {
-                    ingredient.setRecipe(existingRecipe);
-                    existingRecipe.getIngredients().add(ingredient);
-                });
+            for (Ingredient ingredient : updatedRecipe.getIngredients()) {
+                ingredient.setRecipe(existingRecipe);
+                existingRecipe.getIngredients().add(ingredient);
             }
+        }
 
-            return recipeRepository.save(existingRecipe);
-        });
+        return recipeRepository.save(existingRecipe);
+    }
+
+    // Method to delete a recipe
+    public void deleteRecipe(Long id) {
+        if (!recipeRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Receta no encontrada con ID: " + id);
+        }
+        recipeRepository.deleteById(id);
     }
 }

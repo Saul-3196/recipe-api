@@ -34,7 +34,7 @@ public class RecipeController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRecipe(@PathVariable Long id) {
         recipeService.deleteRecipe(id);
-        return ResponseEntity.noContent().build(); // Returns HTTP 204 Not Found
+        return ResponseEntity.noContent().build();
     }
     // GET /api/recipes/{id} - Retrieve a specific recipe by ID
     @GetMapping("/{id}")
@@ -44,10 +44,9 @@ public class RecipeController {
     }
     // PUT /api/recipes/{id} - Update an existing recipe by ID
     @PutMapping("/{id}")
-    public ResponseEntity<Recipe> updateRecipe(@Valid @PathVariable Long id, @RequestBody Recipe updatedRecipe) {
-        return recipeService.updateRecipe(id, updatedRecipe)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Recipe> updateRecipe(@PathVariable Long id, @Valid @RequestBody Recipe recipe) {
+        Recipe updated = recipeService.updateRecipe(id, recipe);
+        return ResponseEntity.ok(updated);
     }
 
 }
