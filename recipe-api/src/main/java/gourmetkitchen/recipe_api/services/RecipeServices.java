@@ -3,6 +3,7 @@ package gourmetkitchen.recipe_api.services;
 import gourmetkitchen.recipe_api.entities.Recipe;
 import gourmetkitchen.recipe_api.repositories.RecipeRepository;
 import org.springframework.stereotype.Service;
+import gourmetkitchen.recipe_api.exceptions.ResourceNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,8 +41,9 @@ public class RecipeServices {
     }
 
     // Method to find a single recipe by its ID
-    public Optional<Recipe> getRecipeById(Long id) {
-        return recipeRepository.findById(id);
+    public Recipe getRecipeById(Long id) {
+        return recipeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Receta no encontrada con ID: " + id));
     }
 
     // Method to update an existing recipe by ID

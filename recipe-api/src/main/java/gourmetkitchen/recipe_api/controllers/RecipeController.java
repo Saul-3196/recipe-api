@@ -39,9 +39,8 @@ public class RecipeController {
     // GET /api/recipes/{id} - Retrieve a specific recipe by ID
     @GetMapping("/{id}")
     public ResponseEntity<Recipe> getRecipeById(@PathVariable Long id) {
-        return recipeService.getRecipeById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build()); // Returns HTTP 404 if not found
+        Recipe recipe = recipeService.getRecipeById(id);
+        return ResponseEntity.ok(recipe);
     }
     // PUT /api/recipes/{id} - Update an existing recipe by ID
     @PutMapping("/{id}")
