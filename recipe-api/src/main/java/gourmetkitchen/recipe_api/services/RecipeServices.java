@@ -5,12 +5,19 @@ import gourmetkitchen.recipe_api.entities.Recipe;
 import gourmetkitchen.recipe_api.repositories.RecipeRepository;
 import org.springframework.stereotype.Service;
 import gourmetkitchen.recipe_api.exceptions.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class RecipeServices {
+
+    // Retrieve paginated and sorted recipes
+    public Page<Recipe> getAllRecipes(Pageable pageable) {
+        return recipeRepository.findAll(pageable);
+    }
 
     private final RecipeRepository recipeRepository;
 

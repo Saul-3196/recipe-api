@@ -2,11 +2,15 @@ package gourmetkitchen.recipe_api.controllers;
 
 import gourmetkitchen.recipe_api.entities.Recipe;
 import gourmetkitchen.recipe_api.services.RecipeServices;
+import io.swagger.v3.oas.annotations.Parameter;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/recipes")
@@ -18,10 +22,13 @@ public class RecipeController {
         this.recipeService = recipeService;
     }
 
-    // GET /api/recipes - Get all recipes
+    // GET /api/recipes - Retrieve a paginated and sorted list of recipes
     @GetMapping
-    public List<Recipe> getAllRecipes() {
-        return recipeService.getAllRecipes();
+    @PageableAsQueryParam
+    public ResponseEntity<Page<Recipe>> getAllRecipes(
+            @Parameter(hidden = true) @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        Page<Recipe> recipes = recipeService.getAllRecipes(pageable);
+        return ResponseEntity.ok(recipes);
     }
 
     // POST /api/recipes - Save new recipe
@@ -30,23 +37,25 @@ public class RecipeController {
         Recipe savedRecipe = recipeService.createRecipe(recipe);
         return ResponseEntity.ok(savedRecipe);
     }
+
     // DELETE /api/recipes/{id} - Delete by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRecipe(@PathVariable Long id) {
         recipeService.deleteRecipe(id);
         return ResponseEntity.noContent().build();
     }
+
     // GET /api/recipes/{id} - Retrieve a specific recipe by ID
     @GetMapping("/{id}")
     public ResponseEntity<Recipe> getRecipeById(@PathVariable Long id) {
         Recipe recipe = recipeService.getRecipeById(id);
         return ResponseEntity.ok(recipe);
     }
+
     // PUT /api/recipes/{id} - Update an existing recipe by ID
     @PutMapping("/{id}")
     public ResponseEntity<Recipe> updateRecipe(@PathVariable Long id, @Valid @RequestBody Recipe recipe) {
         Recipe updated = recipeService.updateRecipe(id, recipe);
         return ResponseEntity.ok(updated);
     }
-
 }
