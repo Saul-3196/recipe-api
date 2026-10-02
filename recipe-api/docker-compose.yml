@@ -1,9 +1,10 @@
 version: '3.8'
 
 services:
-  postgres-db:
+  postgres:
     image: postgres:16-alpine
     container_name: gourmetkitchen-postgres
+    restart: always
     environment:
       POSTGRES_DB: gourmetkitchendb
       POSTGRES_USER: gourmetuser
@@ -12,6 +13,31 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - recipe-network
+
+  recipe-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gourmetkitchen-recipe-api
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: gourmetkitchendb
+      DB_USER: gourmetuser
+      DB_PASSWORD: gourmetpassword
+    networks:
+      - recipe-network
 
 volumes:
   postgres_data:
+
+networks:
+  recipe-network:
+    driver: bridge
