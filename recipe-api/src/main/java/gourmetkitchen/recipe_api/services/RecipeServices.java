@@ -14,8 +14,19 @@ import java.util.Optional;
 @Service
 public class RecipeServices {
 
-    // Retrieve paginated and sorted recipes
-    public Page<Recipe> getAllRecipes(Pageable pageable) {
+    // Retrieve recipes with optional filters (title and difficulty) and pagination
+    public Page<Recipe> getAllRecipes(String title, String difficulty, Pageable pageable) {
+        boolean hasTitle = title != null && !title.trim().isEmpty();
+        boolean hasDifficulty = difficulty != null && !difficulty.trim().isEmpty();
+
+        if (hasTitle && hasDifficulty) {
+            return recipeRepository.findByTitleContainingIgnoreCaseAndDifficultyIgnoreCase(title.trim(), difficulty.trim(), pageable);
+        } else if (hasTitle) {
+            return recipeRepository.findByTitleContainingIgnoreCase(title.trim(), pageable);
+        } else if (hasDifficulty) {
+            return recipeRepository.findByDifficultyIgnoreCase(difficulty.trim(), pageable);
+        }
+
         return recipeRepository.findAll(pageable);
     }
 

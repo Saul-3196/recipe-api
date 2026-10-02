@@ -22,12 +22,14 @@ public class RecipeController {
         this.recipeService = recipeService;
     }
 
-    // GET /api/recipes - Retrieve a paginated and sorted list of recipes
+    // GET /api/recipes - Retrieve a paginated and sorted list of recipes with optional filters
     @GetMapping
     @PageableAsQueryParam
     public ResponseEntity<Page<Recipe>> getAllRecipes(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String difficulty,
             @Parameter(hidden = true) @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<Recipe> recipes = recipeService.getAllRecipes(pageable);
+        Page<Recipe> recipes = recipeService.getAllRecipes(title, difficulty, pageable);
         return ResponseEntity.ok(recipes);
     }
 
